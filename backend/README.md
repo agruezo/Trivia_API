@@ -182,7 +182,10 @@ POST '/quizzes'
 
     {
         "previous_questions": questions which are previously shown,
-        "quiz_category": category id which specifies the whole quiz set
+        "quiz_category": {
+            "type": category for the expected questions,
+            "id": category id
+        }
     }
 
 - Returns: An object with two keys, success, and question.
