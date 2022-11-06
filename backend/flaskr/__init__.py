@@ -148,7 +148,7 @@ def create_app(test_config=None):
         difficulty=data['difficulty']
       )
     except:
-      abort(404)
+      abort(422)
 
     new_question.insert()
 
@@ -255,32 +255,38 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
-
     try:
-      body = request.get_json()
-      if not ('quiz_category' in body and 'previous_questions' in body):
-            abort(422)
+            body = request.get_json()
+            print(body)
+            quiz_category = body.get('quiz_category', None)
+            previous_questions = body.get('previous_questions', None)
+            print(quiz_category)
+            if quiz_category['id'] == 0 :
+                selection = Question.query.filter(
+                    Question.id.notin_(previous_questions)).all()
+                print(selection)
+            else:
+                selection = Question.query.filter(
+                    Question.category == quiz_category['id'], Question.id.notin_(previous_questions)).all()
 
-      category = body.get('quiz_category')
-      previous_questions = body.get('previous_questions')
+            formatted_questions = paginate_questions(request, selection)
 
-      if category['type'] == 'click':
-        available_questions = Question.query.filter(
-                Question.id.notin_((previous_questions))).all()
-      else:
-        available_questions = Question.query.filter_by(category=category['id']).filter(Question.id.notin_((previous_questions))).all()
-        new_question = available_questions[random.randrange(
-                0, len(available_questions))].format() if len(available_questions) > 0 else None
+            current_category = 0
+            if len(formatted_questions) == 0:
+                formatted_questions = ''
+            else:
+                formatted_questions = random.choice(formatted_questions)
+                current_category = selection[0].category
 
-        return jsonify(
-          {
-            'success': True,
-            'question': new_question
-          }
-        )
-        
+            return jsonify({
+                'success': True,
+                'current_category': current_category,
+                'question': formatted_questions,
+                'total_questions': len(selection)
+            })
     except:
-            abort(422)
+      abort(400)
+    
   '''
   @TODO: 
   Create error handlers for all expected errors 

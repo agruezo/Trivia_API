@@ -79,24 +79,118 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 ## Review Comment to the Students
 ```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
-
 Endpoints
-GET '/api/v1.0/categories'
-GET ...
-POST ...
-DELETE ...
+- GET '/categories'
+- GET '/questions'
+- POST '/questions'
+- DELETE '/questions'
+- POST '/quizzes'
 
-GET '/api/v1.0/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+GET '/categories'
+- Fetches a dictionary of categories where keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
+- Returns: An object with a single key, an integer category id, and a single value, a category type.
+
+    {
+        1 : "Science",
+        2 : "Art",
+        3 : "Geography",
+        4 : "History",
+        5 : "Entertainment",
+        6 : "Sports"
+    }
+
+GET '/questions'
+- Fetches a dictionary of questions with a slice of questions which are shown in one page, the total number of questions, the current category, and a list of all categories.
+- Request Arguments: None
+- Returns: An object with six keys, a success flag, a question id, a question text, an answer text, a category id and a difficulty score.
+
+    {
+        'success' : a success flag,
+        'questions' : up to ten questions in one page,
+        'total_questions' : the total number of questions in the database,
+        'current_category' : the current category,
+        'categories' : a dictionary of the categories (see GET  '/categories')
+    }
+
+POST '/questions'
+- Post a dictionary of a question to create a new question entry.
+- Request Arguments: An object with four keys, a question text, an answer text, a category id, and a difficulty score.
+
+    {
+        "question": question,
+        "answer": answer,
+        "category": category id (integer),
+        "difficulty": difficulty score,
+    }
+- Returns: An object with six keys, which corresponds to the newly created question.
+
+    {
+        'success' : True,
+        'id' : 4,
+        'question' : a question,
+        'answer' : the corresponding answer to the question,
+        'category' : category id (integer),
+        'difficulty' : difficulty score
+    }
+
+DELETE '/questions/<int:question_id>'
+- Delete a question based on its id.
+- Request Arguments: None
+- Returns: An object with six keys, which corresponds to the deleted question.
+
+    {
+        'success' : True,
+        'id' : 4,
+        'question' : a question,
+        'answer' : the corresponding answer to the question,
+        'category' : category id (integer),
+        'difficulty' : difficulty score
+    }
+
+
+POST '/questions/search'
+- Fetches questions which includes the given search term as a substring.
+- Request Arguments: 
+
+    {
+        'search_term': search term string
+    }
+
+- Returns: An object with three keys, questions, total_questions, current_categories.
+
+    {
+        "questions": questions that match the search term,
+        "total_questions": the total number of questions returned,
+        "current_category": the current category
+    }
+
+GET '/categories/<int:category>/questions'
+- Fetches questions which have the given category id.
+- Request Arguments: None
+- Returns: An object with three keys, questions, total_questions, current_categories.
+
+    {
+        "questions": questions that have the given category id,
+        "total_questions": the total number of questions returned,
+        "current_category": the current category
+    }
+
+POST '/quizzes'
+- Fetches questions to play the quiz, which are fetched one by one from the questions specified by the given category id.
+- Request Arguments: 
+
+    {
+        "previous_questions": questions which are previously shown,
+        "quiz_category": category id which specifies the whole quiz set
+    }
+
+- Returns: An object with two keys, success, and question.
+
+    {
+        "success": success flag,
+        "question": a question sampled from the whole quiz set
+    }
 
 ```
 
